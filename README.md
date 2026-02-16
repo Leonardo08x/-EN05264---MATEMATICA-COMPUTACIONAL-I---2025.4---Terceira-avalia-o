@@ -31,14 +31,14 @@ O projeto implementa e compara duas metodologias distintas:
 
 ## Estrutura de Pastas
 📂 TRABALHO_FINAL_MASTER/
-├── 📂 dataset/           
-├── 📂 metaheuristica/    
+| 📂 dataset/
+| 📂 metaheuristica/
 │   └── 📄 GA.py
-├── 📂 solver/            
+| 📂 solver/
 │   └── 📄 solve.py
-├── 📂 utils/             
+| 📂 utils/
 │   └── 📄 utils.py
-└── 📄 main.py                     
+└── 📄 main.py           
 
 ---
 
