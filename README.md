@@ -28,6 +28,7 @@ O projeto implementa e compara duas metodologias distintas:
 2. Metaheurística (Algoritmo Genético): Implementação estocástica para busca de soluções e análise de comportamento médio.
 
 ## Estrutura de Pastas
+
 📂 TRABALHO_FINAL_MASTER/
 ├── 📂 dataset/           
 ├── 📂 metaheuristica/    
