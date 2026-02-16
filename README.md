@@ -27,20 +27,6 @@ O projeto implementa e compara duas metodologias distintas:
 1. PLI (Programação Linear Inteira): Formulação matemática exata utilizando variáveis binárias ou inteiras.
 2. Metaheurística (Algoritmo Genético): Implementação estocástica para busca de soluções e análise de comportamento médio.
 
-## Estrutura de Pastas
-
-## Estrutura de Pastas
-📂 TRABALHO_FINAL_MASTER/
-| 📂 dataset/
-| 📂 metaheuristica/
-│   └── 📄 GA.py
-| 📂 solver/
-│   └── 📄 solve.py
-| 📂 utils/
-│   └── 📄 utils.py
-└── 📄 main.py           
-
----
 
 ## Como Executar
 O projeto utiliza asyncio e ProcessPoolExecutor para garantir a execução simultânea das abordagens e otimizar o tempo de coleta de resultados.
