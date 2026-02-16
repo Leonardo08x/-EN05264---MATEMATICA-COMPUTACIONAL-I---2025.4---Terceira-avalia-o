@@ -29,18 +29,16 @@ O projeto implementa e compara duas metodologias distintas:
 
 ## Estrutura de Pastas
 
+## Estrutura de Pastas
 📂 TRABALHO_FINAL_MASTER/
 ├── 📂 dataset/           
 ├── 📂 metaheuristica/    
 │   └── 📄 GA.py
-|
 ├── 📂 solver/            
 │   └── 📄 solve.py
-|
 ├── 📂 utils/             
 │   └── 📄 utils.py
-|
-└── 📄 main.py            
+└── 📄 main.py                     
 
 ---
 
