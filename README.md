@@ -32,10 +32,13 @@ O projeto implementa e compara duas metodologias distintas:
 ├── 📂 dataset/           
 ├── 📂 metaheuristica/    
 │   └── 📄 GA.py
+|
 ├── 📂 solver/            
 │   └── 📄 solve.py
+|
 ├── 📂 utils/             
 │   └── 📄 utils.py
+|
 └── 📄 main.py            
 
 ---
