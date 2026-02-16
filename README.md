@@ -30,7 +30,8 @@ O projeto implementa e compara duas metodologias distintas:
 
 ## Como Executar
 O projeto utiliza asyncio e ProcessPoolExecutor para garantir a execução simultânea das abordagens e otimizar o tempo de coleta de resultados.
-Descompacte o dataset.zip pois o programa espera pastas nesse formate na pasta dataset: dataset/i01/arquivo.json
+
+**OBS:** Descompacte o dataset.zip pois o programa espera pastas nesse formato na pasta dataset: *dataset/i01/arquivo.json*
 
 1. Bibliotecas Necessárias:
    * pandas (Manipulação de dados CSV)
