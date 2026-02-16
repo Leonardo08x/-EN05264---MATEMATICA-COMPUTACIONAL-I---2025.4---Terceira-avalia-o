@@ -1,0 +1,1 @@
+# -EN05264---MATEMATICA-COMPUTACIONAL-I---2025.4---Terceira-avalia-o
