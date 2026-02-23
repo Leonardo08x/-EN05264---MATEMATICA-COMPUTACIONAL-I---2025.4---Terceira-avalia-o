@@ -7,16 +7,17 @@ async def main():
  with ProcessPoolExecutor() as executor:
     loop = asyncio.get_running_loop()
     for i in range(1, 31):
-        dia = f"i0{i}" if i < 10 else f"i{i}"
+        instancia = f"i0{i}" if i < 10 else f"i{i}"
 
         # garante que as duas funções sejam executadas simultaneamente, programação em paralelo
         await asyncio.gather(
-            loop.run_in_executor(executor,algoritmo_genetico, dia),
-            loop.run_in_executor(executor,solver,dia)
+            loop.run_in_executor(executor,algoritmo_genetico, instancia),
+            loop.run_in_executor(executor,solver,instancia)
         )
 
 if __name__ == "__main__":
  try:
     asyncio.run(main())
  except Exception as e:
+
     print(f"Ocorreu um erro: {e}")
