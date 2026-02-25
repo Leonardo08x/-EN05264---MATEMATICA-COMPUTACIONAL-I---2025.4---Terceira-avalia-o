@@ -7,3 +7,9 @@ def dataset_info(dia):
     turno_enfermeiras = pd.read_csv(f"dataset/{dia}/nurse_shifts.csv")
     quartos = pd.read_csv(f"dataset/{dia}/occupied_room_shifts.csv")
     return pesos, turno_enfermeiras, quartos
+
+
+def save_results(dia, escala):
+    arquivo = f"dataset/{dia}/escala_instancia_{dia}_GA.csv"
+    escala.to_csv(arquivo, index=False)
+    print(f"\n[SUCESSO] Arquivo '{arquivo}' gerado na raiz do projeto.")
