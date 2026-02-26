@@ -4,7 +4,7 @@ import pulp
 from typing import Tuple
 from utils import utils
 
-'''
+"""
 O algoritmo PLI (Programação Linear Inteira) é uma 
 técnica de otimização que busca encontrar a melhor solução viavel para um problema, 
 onde as variáveis de decisão são restritas a valores inteiros. 
@@ -14,17 +14,20 @@ minimizar penalidades associadas à falta de habilidade e excesso de carga de tr
 A função solver_PLI é responsável por resolver 
 o problema de escala de enfermeiros utilizando o PLI.
 Ela recebe como entrada a instância do problema,
- um limite de tempo para resolver cada turno
+um limite de tempo para resolver cada turno
 Retorna: (df_escala, custo_total_acumulado, temp_total)
-'''
+"""
+
 
 def solver_PLI(
-    instancia: str, # nome da instância a ser resolvida
-    timeLimit_per_shift: int = 30, # limite de tempo em segundos para resolver cada turno
-    verbose: bool = True, # bool imprimir mensagens de progresso
-    save_results: bool = False, # bool salvar os resultados em arquivo CSV
-) -> Tuple[pd.DataFrame, float, float]: # retorna a escala final, o custo total acumulado e o tempo total em segundos
-    
+    instancia: str,  # nome da instância a ser resolvida
+    timeLimit_per_shift: int = 30,  # limite de tempo em segundos para resolver cada turno
+    verbose: bool = True,  # bool imprimir mensagens de progresso
+    save_results: bool = False,  # bool salvar os resultados em arquivo CSV
+) -> Tuple[
+    pd.DataFrame, float, float
+]:  # retorna a escala final, o custo total acumulado e o tempo total em segundos
+
     if verbose:
         print(f"\n[INÍCIO] Resolvendo instância NRA: {instancia}")
 
@@ -38,8 +41,8 @@ def solver_PLI(
     #  C) dataframe de quartos.
     pesos_full, df_enfermeiros, df_salas = utils.dataset_info(instancia)
 
-    # 2. Extração dos pesos 
-    # 
+    # 2. Extração dos pesos
+    #
     pesos = pesos_full.get("weights", {})
     W_skill = pesos.get("S2_room_nurse_skill", 10)
     W_work = pesos.get("S4_nurse_excessive_workload", 10)
@@ -57,53 +60,57 @@ def solver_PLI(
     escala_final = []
     custo_total_acumulado = 0.0
 
-    # 
-    #---------- ABORDAGEM: OTIMIZAÇÃO GULOSA POR TURNO (DECOMPOSIÇÃO TEMPORAL) ----------
+    #
+    # ---------- ABORDAGEM: OTIMIZAÇÃO GULOSA POR TURNO (DECOMPOSIÇÃO TEMPORAL) ----------
     # 4. Processamento Turno a Turno
 
-    '''
-     a cada turno, o modelo PLI é construído do zero,
+    """
+    a cada turno, o modelo PLI é construído do zero,
     garantindo que ele lide apenas com os dados relevantes daquele turno específico.
+
     VANTAGENS: Isso reduz drasticamente o número de variáveis e restrições,
-     tornando o problema mais manejável e acelerando a resolução.
+    tornando o problema mais manejável e acelerando a resolução.
+
     DESVANTAGENS: O modelo PLI é resolvido de forma sequencial, turno a turno,
     o que pode aumentar o tempo total de execução, especialmente se houver muitos turnos.
-    '''
-    '''
+
+
     Pipeline do código:
 
     [INÍCIO] → Loop turnos → Filtrar dados turno → Criar modelo MILP 
     → Criar variáveis → Definir objetivo → Adicionar restrições → Resolver (solver) → 
-    Extrair solução → Somar custo → Próximo turno → Gerar resultado final → [FIM]'''
+    Extrair solução → Somar custo → Próximo turno → Gerar resultado final → [FIM]"""
 
     for turno in todos_turnos:
         if verbose:
             print(f"  > Otimizando Turno Global {turno}...", end="\r")
 
         # Filtra os dados do turno atual
-        # esse passo é realizado para evitar que o modelo PLI 
+        # esse passo é realizado para evitar que o modelo PLI
         # tenha que lidar com dados irrelevantes que seriam de outros turnos,
         # o que pode aumentar significativamente o tempo de resolução.
         quartos_turno = turnos_rooms.get_group(turno).reset_index(drop=True)
-        
+
         if turno not in turnos_nurses.groups:
             continue
-            
+
         nurses_disponiveis = turnos_nurses.get_group(turno)
         lista_nurses = nurses_disponiveis["nurse_id"].tolist()
 
         # Modelo PLI (Minimização)
-        #pulp.LpProblem é a classe que representa o modelo de otimização.
-         # O primeiro argumento é o nome do problema (usado para identificação e depuração).
-        # O segundo argumento é o tipo de problema, que pode ser pulp.LpMinimize para minimização 
+        # pulp.LpProblem é a classe que representa o modelo de otimização.
+        # O primeiro argumento é o nome do problema (usado para identificação e depuração).
+        # O segundo argumento é o tipo de problema, que pode ser pulp.LpMinimize para minimização
         # ou pulp.LpMaximize para maximização.
         prob = pulp.LpProblem(f"NRA_Turno_{turno}", pulp.LpMinimize)
 
         # VARIÁVEIS DE DECISÃO (int or binary)
         # exemplo: x[(n, r)] = 1 se enfermeiro n for alocado ao quarto r, 0 caso contrário
-        x = pulp.LpVariable.dicts("x", 
-                                  ((n, r) for n in lista_nurses for r in quartos_turno.index), 
-                                  cat="Binary")
+        x = pulp.LpVariable.dicts(
+            "x",
+            ((n, r) for n in lista_nurses for r in quartos_turno.index),
+            cat="Binary",
+        )
 
         # z: Excesso de carga : int
         # exemplo: z[n] representa o excesso de carga do enfermeiro n,
@@ -113,9 +120,9 @@ def solver_PLI(
         # FUNÇÃO OBJETIVO: S2 (Déficit Habilidade) + S4 (Excesso Carga)
         # A função objetivo é a soma ponderada das penalidades S2 e S4, onde:
         # S2: Para cada quarto, se o enfermeiro alocado tiver habilidade inferior à requerida,
-        #  é calculada uma penalidade proporcional à diferença de habilidade multiplicada pelo peso W
+        # é calculada uma penalidade proporcional à diferença de habilidade multiplicada pelo peso W
         # S4: Para cada enfermeiro, se a carga total atribuída a ele exceder sua capacidade máxima,
-        #  é calculada uma penalidade proporcional ao excesso de carga multiplicada pelo peso W
+        # é calculada uma penalidade proporcional ao excesso de carga multiplicada pelo peso W
 
         penalidades = []
 
@@ -132,7 +139,7 @@ def solver_PLI(
         # Penalidade S4
         for n in lista_nurses:
             penalidades.append(z[n] * W_work)
-        
+
         prob += pulp.lpSum(penalidades)
 
         # RESTRIÇÕES
@@ -145,9 +152,11 @@ def solver_PLI(
         # 2. Excesso de Trabalho: Carga Total - Carga Máxima <= z
         for n in lista_nurses:
             # Soma das cargas dos quartos atribuídos ao enfermeiro n
-            carga_atribuida = pulp.lpSum(x[(n, r_idx)] * float(quartos_turno.loc[r_idx, "total_room_workload"]) 
-                                         for r_idx in quartos_turno.index)
-            
+            carga_atribuida = pulp.lpSum(
+                x[(n, r_idx)] * float(quartos_turno.loc[r_idx, "total_room_workload"])
+                for r_idx in quartos_turno.index
+            )
+
             cap_maxima = float(nurse_load_map.get(n, 0))
             prob += carga_atribuida - cap_maxima <= z[n]
 
@@ -161,18 +170,20 @@ def solver_PLI(
             for r_idx, r_row in quartos_turno.iterrows():
                 for n in lista_nurses:
                     if pulp.value(x[(n, r_idx)]) > 0.5:
-                        escala_final.append({
-                            "global_shift": int(turno),
-                            "room_id": r_row["room_id"],
-                            "nurse_id": n
-                        })
+                        escala_final.append(
+                            {
+                                "global_shift": int(turno),
+                                "room_id": r_row["room_id"],
+                                "nurse_id": n,
+                            }
+                        )
                         break
 
     # 5. RESULTADO FINAL
     df_escalaenf = pd.DataFrame(escala_final)
-    
+
     if save_results:
-        utils.save_results(instancia, df_escalaenf )
+        utils.save_results(instancia, df_escalaenf)
 
     t_end_total = time.time()
     temp_total = t_end_total - t_start_total
@@ -183,21 +194,24 @@ def solver_PLI(
 
     return df_escalaenf, custo_total_acumulado, temp_total
 
-'''
- EXEMPLO TESTE I04 COM PLI
- O teste abaixo é um exemplo de como chamar a função solver_PLI para resolver a instância
- Como usar:
+
+"""
+EXEMPLO TESTE I04 COM PLI
+O teste abaixo é um exemplo de como chamar a função solver_PLI para resolver a instância
+Como usar:
     1. Certifique-se de que a instância "i04" esteja presente na pasta dataset/dataset/i04
     2. Execute este script. Ele irá resolver a instância usando o PLI e imprimir os resultados.
     3. O resultado inclui o número de linhas na escala gerada, o custo total
-         acumulado e o tempo gasto para resolver a instância.
+        acumulado e o tempo gasto para resolver a instância.
     Observação: O tempo reportado pelo solver é o tempo gasto apenas na resolução do modelo PLI,
     enquanto o tempo medido pelo sistema inclui todo o processo,
     desde o carregamento dos dados até a geração do resultado final.
-    '''
+    """
+
+
 def teste_solver():
-    instancia = "i04"          # troque pela instância que quiser testar
-    limite_tempo = 10          # segundos por turno
+    instancia = "i04"  # troque pela instância que quiser testar
+    limite_tempo = 10  # segundos por turno
 
     print("\n===== TESTE DO SOLVER PLI =====\n")
 
@@ -207,7 +221,7 @@ def teste_solver():
         instancia=instancia,
         timeLimit_per_shift=limite_tempo,
         verbose=True,
-        save_results=False
+        save_results=False,
     )
 
     t1 = time.time()
@@ -218,7 +232,8 @@ def teste_solver():
     print("Custo total:", custo)
     print("Tempo reportado solver:", round(tempo_total, 4), "s")
     print("Tempo medido sistema:", round(t1 - t0, 4), "s")
-    
+
+
 if __name__ == "__main__":
     teste_solver()
 
@@ -228,9 +243,8 @@ if __name__ == "__main__":
     # 2. Extrai os pesos S2 e S4 do dicionário de pesos
     # 3. Cria mapas de habilidade e carga máxima dos enfermeiros para acesso rápido.
     # 4. Agrupa os dados por turno global para facilitar o processamento turno a turno.
-    #5. Para cada turno, filtra os dados relevantes e constrói um modelo PLI específico para aquele turno.
-    #6. Define as variáveis de decisão, a função objetivo e as restrições do modelo.
-    #7. Resolve o modelo usando o solver CBC com um limite de tempo por turno.
-    #8. Extrai a solução e acumula o custo total.
-    #9. Ao final, gera um DataFrame com a escala final, imprime o custo total acumulado e o tempo gasto.
-
+    # 5. Para cada turno, filtra os dados relevantes e constrói um modelo PLI específico para aquele turno.
+    # 6. Define as variáveis de decisão, a função objetivo e as restrições do modelo.
+    # 7. Resolve o modelo usando o solver CBC com um limite de tempo por turno.
+    # 8. Extrai a solução e acumula o custo total.
+    # 9. Ao final, gera um DataFrame com a escala final, imprime o custo total acumulado e o tempo gasto.
