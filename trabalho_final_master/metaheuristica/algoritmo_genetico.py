@@ -3,8 +3,7 @@ Módulo do Algoritmo Genético (Metaheurística)
 Abordagem: Otimização Gulosa por Turno (Shift-by-Shift)
 """
 
-from email import utils
-
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from mealpy.evolutionary_based import GA
@@ -26,12 +25,10 @@ def algoritmo_genetico(instancia):
     pesos, df_nurses, df_rooms = utils.dataset_info(instancia)
 
     # 2. O Gerenciador de Estado Global (A Memória)
-    # max_load no dataset dita o limite de peso acumulado que o enfermeiro suporta
     enfermeiros_unicos = df_nurses.drop_duplicates("nurse_id")
     nurse_skills = enfermeiros_unicos.set_index("nurse_id")["skill_level"].to_dict()
     nurse_max_load = enfermeiros_unicos.set_index("nurse_id")["max_load"].to_dict()
 
-    # Inicia todo mundo com 0 de carga de trabalho acumulada na semana
     nurse_workload = {nurse: 0 for nurse in nurse_skills.keys()}
 
     # 3. Pré-processamento O(1)
@@ -41,6 +38,7 @@ def algoritmo_genetico(instancia):
 
     escala_final = []
     custo_total_acumulado = 0
+    historico_convergencia_global = []  # Armazena a curva de aprendizado de cada turno
 
     # --- LOOP DO MAESTRO ---
     for turno in todos_turnos:
@@ -50,15 +48,11 @@ def algoritmo_genetico(instancia):
             continue
 
         enfermeiros_disponiveis = turnos_nurses.get_group(turno)["nurse_id"].tolist()
-
         num_quartos = len(quartos_hoje)
         num_enfermeiros = len(enfermeiros_disponiveis)
 
         if num_quartos == 0 or num_enfermeiros == 0:
             continue
-
-        # Removido o bloqueio de falta de enfermeiros. O algoritmo vai ter que se virar
-        # para alocar o mesmo enfermeiro em vários quartos.
 
         # --- A FUNÇÃO DE FITNESS (O ORÁCULO) ---
         class NRAPerShift(Problem):
@@ -66,10 +60,7 @@ def algoritmo_genetico(instancia):
                 super().__init__(bounds, minmax, **kwargs)
 
             def obj_func(self, solution):
-                # 'solution' agora é um vetor de inteiros onde o índice é o Quarto e o valor é o Enfermeiro
                 custo_turno = 0
-
-                # Memória volátil: para saber quanto de carga o enfermeiro está recebendo SÓ NESTE TURNO
                 carga_recebida_neste_turno = {enf: 0 for enf in enfermeiros_disponiveis}
 
                 for i in range(num_quartos):
@@ -77,7 +68,7 @@ def algoritmo_genetico(instancia):
                     idx_enf = int(solution[i])
                     enf_id = enfermeiros_disponiveis[idx_enf]
 
-                    # Penalidade 1: S2_room_nurse_skill (Déficit de Habilidade)
+                    # S2: Déficit de Habilidade
                     req_skill = quarto["max_skill_required"]
                     enf_skill = nurse_skills[enf_id]
                     if enf_skill < req_skill:
@@ -85,11 +76,9 @@ def algoritmo_genetico(instancia):
                             "S2_room_nurse_skill", 10
                         )
 
-                    # Acumula a carga que o enfermeiro pegou na simulação deste indivíduo
                     carga_recebida_neste_turno[enf_id] += quarto["total_room_workload"]
 
-                # Penalidade 2: S4_nurse_excessive_workload (Excesso de Carga Horária Global)
-                # Verifica se o que ele pegou HOJE somado ao que ele já tinha na SEMANA estoura o contrato
+                # S4: Excesso de Carga Global
                 for enf_id, carga_extra in carga_recebida_neste_turno.items():
                     if carga_extra > 0:
                         load_simulada = nurse_workload[enf_id] + carga_extra
@@ -102,8 +91,6 @@ def algoritmo_genetico(instancia):
                 return custo_turno
 
         # --- EXECUÇÃO DO ALGORITMO GENÉTICO ---
-        # AQUI ESTÁ A MÁGICA: Cada quarto (gene) sorteia um ID de enfermeiro (de 0 a num_enfermeiros - 1)
-        # Sendo um IntegerVar e não uma PermutationVar, a repetição é nativa e permitida.
         bounds = [
             IntegerVar(lb=0, ub=num_enfermeiros - 1, name=f"Q_{i}")
             for i in range(num_quartos)
@@ -117,6 +104,10 @@ def algoritmo_genetico(instancia):
         best_cost = model.g_best.target.fitness
         custo_total_acumulado += best_cost
 
+        # Extrai a curva de convergência deste turno específico
+        historico_turno = [sol.target.fitness for sol in model.history.list_global_best]
+        historico_convergencia_global.append(historico_turno)
+
         # --- DECODIFICAÇÃO E ATUALIZAÇÃO DA MEMÓRIA GLOBAL ---
         carga_efetivada = {enf: 0 for enf in enfermeiros_disponiveis}
 
@@ -125,7 +116,6 @@ def algoritmo_genetico(instancia):
             enf_id = enfermeiros_disponiveis[idx_enf]
             quarto = quartos_hoje[i]
 
-            # Registra na Escala
             escala_final.append(
                 {
                     "global_shift": turno,
@@ -133,11 +123,8 @@ def algoritmo_genetico(instancia):
                     "nurse_id": enf_id,
                 }
             )
-
-            # Acumula a carga real que foi decidida
             carga_efetivada[enf_id] += quarto["total_room_workload"]
 
-        # Aplica a carga de trabalho física no histórico global da semana
         for enf_id, carga in carga_efetivada.items():
             if carga > 0:
                 nurse_workload[enf_id] += carga
@@ -147,24 +134,66 @@ def algoritmo_genetico(instancia):
         )
 
     df_escala = pd.DataFrame(escala_final)
-    print(f"\n[FIM] Custo Total Ponderado (S2 + S4): {custo_total_acumulado}")
+    print(
+        f"\n[FIM] Custo Total Ponderado Instância {instancia}: {custo_total_acumulado}"
+    )
+
+    # --- GERAÇÃO DO GRÁFICO DE CONVERGÊNCIA ---
+    if historico_convergencia_global:
+        matriz_historico = np.array(historico_convergencia_global)
+        convergencia_media = np.mean(matriz_historico, axis=0)
+
+        plt.figure(figsize=(10, 6))
+        plt.plot(
+            convergencia_media,
+            color="#1f77b4",
+            linewidth=2.5,
+            label="Custo Médio (Fitness)",
+        )
+        plt.title(
+            f"Convergência Média por Turno - GA Guloso (Instância {instancia})",
+            fontsize=14,
+        )
+        plt.xlabel("Gerações (Epochs)", fontsize=12)
+        plt.ylabel("Custo Médio de Penalidades (S2 + S4)", fontsize=12)
+        plt.grid(True, linestyle="--", alpha=0.7)
+        plt.legend(fontsize=12)
+
+        nome_imagem = f"resultados/convergencia_{instancia}_GA.png"
+        plt.savefig(nome_imagem, bbox_inches="tight")
+        plt.close()
+        print(f"[SUCESSO] Gráfico de convergência salvo como '{nome_imagem}'.")
 
     return df_escala, custo_total_acumulado
 
 
 # ==========================================
-# CÓDIGO DE TESTE
+# CÓDIGO DE TESTE AUTOMATIZADO (LOTE DE INSTÂNCIAS)
 # ==========================================
 if __name__ == "__main__":
-    for i in range(1, 3):
-        dia = f"i{i:02d}"
+    # Lista com as 4 instâncias que você deseja testar
+    instancias_teste = ["i01", "i02", "i03", "i04", "i06"]
 
-        escala, custo = algoritmo_genetico(dia)
-        print("\nEscala Gerada (Primeiras 10 alocações):")
+    for instancia in instancias_teste:
+        print(f"\n{'='*60}")
+        print(f"INICIANDO PROCESSAMENTO AUTOMATIZADO: Instância {instancia}")
+        print(f"{'='*60}")
 
-        if not escala.empty:
-            print(escala.head(10))
-            utils.save_results(dia, escala)
+        try:
+            escala, custo = algoritmo_genetico(instancia)
 
-        else:
-            print("A escala retornou vazia. Verifique os logs.")
+            # Salvar CSV das escalas com segurança na raiz para evitar erros de diretório
+            nome_csv = f"resultados/escala_gerada_{instancia}_GA.csv"
+            escala.to_csv(nome_csv, index=False)
+            print(f"[SUCESSO] Escala salva como '{nome_csv}'.")
+
+        except FileNotFoundError:
+            print(
+                f"[ERRO] Arquivos da instância {instancia} não encontrados. Verifique se a pasta dataset/{instancia} existe."
+            )
+        except Exception as e:
+            print(f"[ERRO CRÍTICO] Falha na instância {instancia}: {str(e)}")
+
+    print(
+        "\n[FINALIZADO] Processamento em lote concluído. Verifique os gráficos (.png) e escalas (.csv) na pasta."
+    )
