@@ -159,7 +159,7 @@ def algoritmo_genetico(instancia):
         plt.grid(True, linestyle="--", alpha=0.7)
         plt.legend(fontsize=12)
 
-        nome_imagem = f"convergencia_{instancia}_GA.png"
+        nome_imagem = f"resultados/convergencia_{instancia}_GA.png"
         plt.savefig(nome_imagem, bbox_inches="tight")
         plt.close()
         print(f"[SUCESSO] Gráfico de convergência salvo como '{nome_imagem}'.")
@@ -183,7 +183,7 @@ if __name__ == "__main__":
             escala, custo = algoritmo_genetico(instancia)
 
             # Salvar CSV das escalas com segurança na raiz para evitar erros de diretório
-            nome_csv = f"escala_gerada_{instancia}_GA.csv"
+            nome_csv = f"resultados/escala_gerada_{instancia}_GA.csv"
             escala.to_csv(nome_csv, index=False)
             print(f"[SUCESSO] Escala salva como '{nome_csv}'.")
 
