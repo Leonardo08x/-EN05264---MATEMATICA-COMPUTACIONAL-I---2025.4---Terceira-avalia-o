@@ -2,6 +2,14 @@ import time
 import pandas as pd
 import pulp
 from typing import Tuple
+import sys
+import os
+
+# adiciona a raiz do projeto ao path automaticamente
+ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if ROOT_DIR not in sys.path:
+    sys.path.append(ROOT_DIR)
+
 from utils import utils
 
 '''
@@ -22,7 +30,7 @@ def solver_PLI(
     instancia: str, # nome da instância a ser resolvida
     timeLimit_per_shift: int = 30, # limite de tempo em segundos para resolver cada turno
     verbose: bool = True, # bool imprimir mensagens de progresso
-    save_results: bool = False, # bool salvar os resultados em arquivo CSV
+    save_results: bool = False, # bool salvar os resultados em arquivo CSV/JSON
 ) -> Tuple[pd.DataFrame, float, float]: # retorna a escala final, o custo total acumulado e o tempo total em segundos
     
     if verbose:
@@ -92,6 +100,10 @@ def solver_PLI(
         nurses_disponiveis = turnos_nurses.get_group(turno)
         lista_nurses = nurses_disponiveis["nurse_id"].tolist()
 
+        # --- OTIMIZAÇÃO: Conversão para dicionários para evitar lentidão do Pandas ---
+        quartos_lista = quartos_turno.to_dict('records')
+        r_indices = range(len(quartos_lista))
+
         # Modelo PLI (Minimização)
         #pulp.LpProblem é a classe que representa o modelo de otimização.
          # O primeiro argumento é o nome do problema (usado para identificação e depuração).
@@ -102,7 +114,7 @@ def solver_PLI(
         # VARIÁVEIS DE DECISÃO (int or binary)
         # exemplo: x[(n, r)] = 1 se enfermeiro n for alocado ao quarto r, 0 caso contrário
         x = pulp.LpVariable.dicts("x", 
-                                  ((n, r) for n in lista_nurses for r in quartos_turno.index), 
+                                  ((n, r) for n in lista_nurses for r in r_indices), 
                                   cat="Binary")
 
         # z: Excesso de carga : int
@@ -122,8 +134,8 @@ def solver_PLI(
         # Penalidade S2
         for n in lista_nurses:
             n_skill = nurse_skill_map.get(n, 0)
-            for r_idx in quartos_turno.index:
-                r_row = quartos_turno.loc[r_idx]
+            for r_idx in r_indices:
+                r_row = quartos_lista[r_idx]
                 # Deficit é fixo: max(0, requerido - possui)
                 deficit = max(0, int(r_row["max_skill_required"]) - int(n_skill))
                 if deficit > 0:
@@ -137,45 +149,51 @@ def solver_PLI(
 
         # RESTRIÇÕES
         # 1. Cobertura: Cada quarto ocupado precisa de EXATAMENTE 1 enfermeiro
-        for r_idx in quartos_turno.index:
+        for r_idx in r_indices:
             alocacoes_quarto = [x[(n, r_idx)] for n in lista_nurses]
             soma_alocacoes = pulp.lpSum(alocacoes_quarto)
             prob += soma_alocacoes == 1
 
         # 2. Excesso de Trabalho: Carga Total - Carga Máxima <= z
+        cargas_quartos = [float(q["total_room_workload"]) for q in quartos_lista]
         for n in lista_nurses:
             # Soma das cargas dos quartos atribuídos ao enfermeiro n
-            carga_atribuida = pulp.lpSum(x[(n, r_idx)] * float(quartos_turno.loc[r_idx, "total_room_workload"]) 
-                                         for r_idx in quartos_turno.index)
+            carga_atribuida = pulp.lpSum(x[(n, r_idx)] * cargas_quartos[r_idx] for r_idx in r_indices)
             
             cap_maxima = float(nurse_load_map.get(n, 0))
             prob += carga_atribuida - cap_maxima <= z[n]
 
-        # RESOLUÇÃO BRANCH AND BOUND COM LIMITE DE TEMPO
-        solver = pulp.PULP_CBC_CMD(msg=False, timeLimit=timeLimit_per_shift)
+        # RESOLUÇÃO BRANCH AND BOUND COM LIMITE DE TEMPO E GAP
+        solver = pulp.PULP_CBC_CMD(msg=False, timeLimit=timeLimit_per_shift, gapRel=0.01)
         prob.solve(solver)
 
         # EXTRAÇÃO DOS RESULTADOS
         if pulp.LpStatus[prob.status] in ["Optimal", "Integer Feasible"]:
             custo_total_acumulado += pulp.value(prob.objective)
-            for r_idx, r_row in quartos_turno.iterrows():
+            for r_idx in r_indices:
+                r_id_original = quartos_lista[r_idx]["room_id"]
                 for n in lista_nurses:
                     if pulp.value(x[(n, r_idx)]) > 0.5:
                         escala_final.append({
                             "global_shift": int(turno),
-                            "room_id": r_row["room_id"],
+                            "room_id": r_id_original,
                             "nurse_id": n
                         })
                         break
 
     # 5. RESULTADO FINAL
     df_escalaenf = pd.DataFrame(escala_final)
-    
-    if save_results:
-        utils.save_results(instancia, df_escalaenf )
 
     t_end_total = time.time()
     temp_total = t_end_total - t_start_total
+
+    # CORREÇÃO: Usar o parâmetro booleano save_results
+    utils.save_results(
+            instancia,
+            df_escalaenf,
+            custo_total=custo_total_acumulado,
+            tempo_total=temp_total
+        )
 
     if verbose:
         print(f"\n[FIM] Custo Total Acumulado: {custo_total_acumulado:.2f}")
@@ -196,8 +214,8 @@ def solver_PLI(
     desde o carregamento dos dados até a geração do resultado final.
     '''
 def teste_solver():
-    instancia = "i04"          # troque pela instância que quiser testar
-    limite_tempo = 10          # segundos por turno
+    instancia = "i01"          # troque pela instância que quiser testar
+    limite_tempo = 30         # segundos por turno
 
     print("\n===== TESTE DO SOLVER PLI =====\n")
 
@@ -228,9 +246,8 @@ if __name__ == "__main__":
     # 2. Extrai os pesos S2 e S4 do dicionário de pesos
     # 3. Cria mapas de habilidade e carga máxima dos enfermeiros para acesso rápido.
     # 4. Agrupa os dados por turno global para facilitar o processamento turno a turno.
-    #5. Para cada turno, filtra os dados relevantes e constrói um modelo PLI específico para aquele turno.
-    #6. Define as variáveis de decisão, a função objetivo e as restrições do modelo.
-    #7. Resolve o modelo usando o solver CBC com um limite de tempo por turno.
-    #8. Extrai a solução e acumula o custo total.
-    #9. Ao final, gera um DataFrame com a escala final, imprime o custo total acumulado e o tempo gasto.
-
+    # 5. Para cada turno, filtra os dados relevantes e constrói um modelo PLI específico para aquele turno.
+    # 6. Define as variáveis de decisão, a função objetivo e as restrições do modelo.
+    # 7. Resolve o modelo usando o solver CBC com um limite de tempo por turno.
+    # 8. Extrai a solução e acumula o custo total.
+    # 9. Ao final, gera um DataFrame com a escala final, imprime o custo total acumulado e o tempo gasto.

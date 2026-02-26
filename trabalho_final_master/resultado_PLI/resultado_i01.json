@@ -1,0 +1,772 @@
+{
+  "instancia": "i01",
+  "custo_total": 440.0,
+  "tempo_total": 2.074249505996704,
+  "escala": [
+    {
+      "global_shift": 0,
+      "room_id": "r0",
+      "nurse_id": "n07"
+    },
+    {
+      "global_shift": 0,
+      "room_id": "r3",
+      "nurse_id": "n07"
+    },
+    {
+      "global_shift": 1,
+      "room_id": "r0",
+      "nurse_id": "n00"
+    },
+    {
+      "global_shift": 1,
+      "room_id": "r3",
+      "nurse_id": "n00"
+    },
+    {
+      "global_shift": 2,
+      "room_id": "r0",
+      "nurse_id": "n04"
+    },
+    {
+      "global_shift": 2,
+      "room_id": "r3",
+      "nurse_id": "n04"
+    },
+    {
+      "global_shift": 3,
+      "room_id": "r0",
+      "nurse_id": "n06"
+    },
+    {
+      "global_shift": 4,
+      "room_id": "r0",
+      "nurse_id": "n09"
+    },
+    {
+      "global_shift": 5,
+      "room_id": "r0",
+      "nurse_id": "n08"
+    },
+    {
+      "global_shift": 6,
+      "room_id": "r0",
+      "nurse_id": "n00"
+    },
+    {
+      "global_shift": 6,
+      "room_id": "r1",
+      "nurse_id": "n01"
+    },
+    {
+      "global_shift": 6,
+      "room_id": "r2",
+      "nurse_id": "n01"
+    },
+    {
+      "global_shift": 6,
+      "room_id": "r3",
+      "nurse_id": "n01"
+    },
+    {
+      "global_shift": 7,
+      "room_id": "r0",
+      "nurse_id": "n05"
+    },
+    {
+      "global_shift": 7,
+      "room_id": "r1",
+      "nurse_id": "n02"
+    },
+    {
+      "global_shift": 7,
+      "room_id": "r2",
+      "nurse_id": "n03"
+    },
+    {
+      "global_shift": 7,
+      "room_id": "r3",
+      "nurse_id": "n02"
+    },
+    {
+      "global_shift": 8,
+      "room_id": "r0",
+      "nurse_id": "n04"
+    },
+    {
+      "global_shift": 8,
+      "room_id": "r1",
+      "nurse_id": "n04"
+    },
+    {
+      "global_shift": 8,
+      "room_id": "r2",
+      "nurse_id": "n04"
+    },
+    {
+      "global_shift": 8,
+      "room_id": "r3",
+      "nurse_id": "n04"
+    },
+    {
+      "global_shift": 9,
+      "room_id": "r0",
+      "nurse_id": "n00"
+    },
+    {
+      "global_shift": 9,
+      "room_id": "r1",
+      "nurse_id": "n00"
+    },
+    {
+      "global_shift": 9,
+      "room_id": "r2",
+      "nurse_id": "n01"
+    },
+    {
+      "global_shift": 9,
+      "room_id": "r3",
+      "nurse_id": "n01"
+    },
+    {
+      "global_shift": 10,
+      "room_id": "r0",
+      "nurse_id": "n05"
+    },
+    {
+      "global_shift": 10,
+      "room_id": "r1",
+      "nurse_id": "n08"
+    },
+    {
+      "global_shift": 10,
+      "room_id": "r2",
+      "nurse_id": "n08"
+    },
+    {
+      "global_shift": 10,
+      "room_id": "r3",
+      "nurse_id": "n02"
+    },
+    {
+      "global_shift": 11,
+      "room_id": "r0",
+      "nurse_id": "n04"
+    },
+    {
+      "global_shift": 11,
+      "room_id": "r1",
+      "nurse_id": "n04"
+    },
+    {
+      "global_shift": 11,
+      "room_id": "r2",
+      "nurse_id": "n04"
+    },
+    {
+      "global_shift": 11,
+      "room_id": "r3",
+      "nurse_id": "n04"
+    },
+    {
+      "global_shift": 12,
+      "room_id": "r0",
+      "nurse_id": "n09"
+    },
+    {
+      "global_shift": 12,
+      "room_id": "r1",
+      "nurse_id": "n09"
+    },
+    {
+      "global_shift": 12,
+      "room_id": "r2",
+      "nurse_id": "n09"
+    },
+    {
+      "global_shift": 12,
+      "room_id": "r3",
+      "nurse_id": "n09"
+    },
+    {
+      "global_shift": 13,
+      "room_id": "r0",
+      "nurse_id": "n00"
+    },
+    {
+      "global_shift": 13,
+      "room_id": "r1",
+      "nurse_id": "n00"
+    },
+    {
+      "global_shift": 13,
+      "room_id": "r2",
+      "nurse_id": "n00"
+    },
+    {
+      "global_shift": 13,
+      "room_id": "r3",
+      "nurse_id": "n02"
+    },
+    {
+      "global_shift": 14,
+      "room_id": "r0",
+      "nurse_id": "n01"
+    },
+    {
+      "global_shift": 14,
+      "room_id": "r1",
+      "nurse_id": "n01"
+    },
+    {
+      "global_shift": 14,
+      "room_id": "r2",
+      "nurse_id": "n01"
+    },
+    {
+      "global_shift": 14,
+      "room_id": "r3",
+      "nurse_id": "n01"
+    },
+    {
+      "global_shift": 15,
+      "room_id": "r0",
+      "nurse_id": "n04"
+    },
+    {
+      "global_shift": 15,
+      "room_id": "r1",
+      "nurse_id": "n03"
+    },
+    {
+      "global_shift": 15,
+      "room_id": "r2",
+      "nurse_id": "n04"
+    },
+    {
+      "global_shift": 15,
+      "room_id": "r3",
+      "nurse_id": "n04"
+    },
+    {
+      "global_shift": 16,
+      "room_id": "r0",
+      "nurse_id": "n06"
+    },
+    {
+      "global_shift": 16,
+      "room_id": "r1",
+      "nurse_id": "n00"
+    },
+    {
+      "global_shift": 16,
+      "room_id": "r2",
+      "nurse_id": "n00"
+    },
+    {
+      "global_shift": 16,
+      "room_id": "r3",
+      "nurse_id": "n00"
+    },
+    {
+      "global_shift": 17,
+      "room_id": "r0",
+      "nurse_id": "n08"
+    },
+    {
+      "global_shift": 17,
+      "room_id": "r1",
+      "nurse_id": "n08"
+    },
+    {
+      "global_shift": 17,
+      "room_id": "r2",
+      "nurse_id": "n08"
+    },
+    {
+      "global_shift": 17,
+      "room_id": "r3",
+      "nurse_id": "n08"
+    },
+    {
+      "global_shift": 18,
+      "room_id": "r0",
+      "nurse_id": "n03"
+    },
+    {
+      "global_shift": 18,
+      "room_id": "r1",
+      "nurse_id": "n04"
+    },
+    {
+      "global_shift": 18,
+      "room_id": "r2",
+      "nurse_id": "n04"
+    },
+    {
+      "global_shift": 18,
+      "room_id": "r3",
+      "nurse_id": "n04"
+    },
+    {
+      "global_shift": 19,
+      "room_id": "r0",
+      "nurse_id": "n07"
+    },
+    {
+      "global_shift": 19,
+      "room_id": "r1",
+      "nurse_id": "n02"
+    },
+    {
+      "global_shift": 19,
+      "room_id": "r2",
+      "nurse_id": "n05"
+    },
+    {
+      "global_shift": 19,
+      "room_id": "r3",
+      "nurse_id": "n02"
+    },
+    {
+      "global_shift": 20,
+      "room_id": "r0",
+      "nurse_id": "n00"
+    },
+    {
+      "global_shift": 20,
+      "room_id": "r1",
+      "nurse_id": "n00"
+    },
+    {
+      "global_shift": 20,
+      "room_id": "r2",
+      "nurse_id": "n00"
+    },
+    {
+      "global_shift": 20,
+      "room_id": "r3",
+      "nurse_id": "n00"
+    },
+    {
+      "global_shift": 21,
+      "room_id": "r0",
+      "nurse_id": "n08"
+    },
+    {
+      "global_shift": 21,
+      "room_id": "r1",
+      "nurse_id": "n06"
+    },
+    {
+      "global_shift": 21,
+      "room_id": "r2",
+      "nurse_id": "n06"
+    },
+    {
+      "global_shift": 21,
+      "room_id": "r3",
+      "nurse_id": "n08"
+    },
+    {
+      "global_shift": 22,
+      "room_id": "r0",
+      "nurse_id": "n09"
+    },
+    {
+      "global_shift": 22,
+      "room_id": "r1",
+      "nurse_id": "n09"
+    },
+    {
+      "global_shift": 22,
+      "room_id": "r2",
+      "nurse_id": "n07"
+    },
+    {
+      "global_shift": 22,
+      "room_id": "r3",
+      "nurse_id": "n09"
+    },
+    {
+      "global_shift": 23,
+      "room_id": "r0",
+      "nurse_id": "n05"
+    },
+    {
+      "global_shift": 23,
+      "room_id": "r1",
+      "nurse_id": "n11"
+    },
+    {
+      "global_shift": 23,
+      "room_id": "r2",
+      "nurse_id": "n11"
+    },
+    {
+      "global_shift": 23,
+      "room_id": "r3",
+      "nurse_id": "n11"
+    },
+    {
+      "global_shift": 24,
+      "room_id": "r0",
+      "nurse_id": "n10"
+    },
+    {
+      "global_shift": 24,
+      "room_id": "r1",
+      "nurse_id": "n10"
+    },
+    {
+      "global_shift": 24,
+      "room_id": "r2",
+      "nurse_id": "n10"
+    },
+    {
+      "global_shift": 24,
+      "room_id": "r3",
+      "nurse_id": "n10"
+    },
+    {
+      "global_shift": 25,
+      "room_id": "r0",
+      "nurse_id": "n01"
+    },
+    {
+      "global_shift": 25,
+      "room_id": "r1",
+      "nurse_id": "n04"
+    },
+    {
+      "global_shift": 25,
+      "room_id": "r2",
+      "nurse_id": "n04"
+    },
+    {
+      "global_shift": 25,
+      "room_id": "r3",
+      "nurse_id": "n04"
+    },
+    {
+      "global_shift": 26,
+      "room_id": "r0",
+      "nurse_id": "n05"
+    },
+    {
+      "global_shift": 26,
+      "room_id": "r1",
+      "nurse_id": "n03"
+    },
+    {
+      "global_shift": 26,
+      "room_id": "r2",
+      "nurse_id": "n05"
+    },
+    {
+      "global_shift": 26,
+      "room_id": "r3",
+      "nurse_id": "n05"
+    },
+    {
+      "global_shift": 27,
+      "room_id": "r0",
+      "nurse_id": "n07"
+    },
+    {
+      "global_shift": 27,
+      "room_id": "r1",
+      "nurse_id": "n02"
+    },
+    {
+      "global_shift": 27,
+      "room_id": "r2",
+      "nurse_id": "n06"
+    },
+    {
+      "global_shift": 27,
+      "room_id": "r3",
+      "nurse_id": "n06"
+    },
+    {
+      "global_shift": 28,
+      "room_id": "r0",
+      "nurse_id": "n01"
+    },
+    {
+      "global_shift": 28,
+      "room_id": "r1",
+      "nurse_id": "n00"
+    },
+    {
+      "global_shift": 28,
+      "room_id": "r2",
+      "nurse_id": "n00"
+    },
+    {
+      "global_shift": 28,
+      "room_id": "r3",
+      "nurse_id": "n00"
+    },
+    {
+      "global_shift": 29,
+      "room_id": "r0",
+      "nurse_id": "n04"
+    },
+    {
+      "global_shift": 29,
+      "room_id": "r1",
+      "nurse_id": "n04"
+    },
+    {
+      "global_shift": 29,
+      "room_id": "r2",
+      "nurse_id": "n04"
+    },
+    {
+      "global_shift": 29,
+      "room_id": "r3",
+      "nurse_id": "n04"
+    },
+    {
+      "global_shift": 30,
+      "room_id": "r0",
+      "nurse_id": "n03"
+    },
+    {
+      "global_shift": 30,
+      "room_id": "r1",
+      "nurse_id": "n02"
+    },
+    {
+      "global_shift": 30,
+      "room_id": "r2",
+      "nurse_id": "n06"
+    },
+    {
+      "global_shift": 30,
+      "room_id": "r3",
+      "nurse_id": "n06"
+    },
+    {
+      "global_shift": 31,
+      "room_id": "r0",
+      "nurse_id": "n07"
+    },
+    {
+      "global_shift": 31,
+      "room_id": "r1",
+      "nurse_id": "n00"
+    },
+    {
+      "global_shift": 31,
+      "room_id": "r2",
+      "nurse_id": "n00"
+    },
+    {
+      "global_shift": 31,
+      "room_id": "r3",
+      "nurse_id": "n00"
+    },
+    {
+      "global_shift": 32,
+      "room_id": "r0",
+      "nurse_id": "n04"
+    },
+    {
+      "global_shift": 32,
+      "room_id": "r1",
+      "nurse_id": "n04"
+    },
+    {
+      "global_shift": 32,
+      "room_id": "r2",
+      "nurse_id": "n04"
+    },
+    {
+      "global_shift": 32,
+      "room_id": "r3",
+      "nurse_id": "n04"
+    },
+    {
+      "global_shift": 33,
+      "room_id": "r0",
+      "nurse_id": "n03"
+    },
+    {
+      "global_shift": 33,
+      "room_id": "r1",
+      "nurse_id": "n02"
+    },
+    {
+      "global_shift": 33,
+      "room_id": "r2",
+      "nurse_id": "n03"
+    },
+    {
+      "global_shift": 33,
+      "room_id": "r3",
+      "nurse_id": "n02"
+    },
+    {
+      "global_shift": 34,
+      "room_id": "r0",
+      "nurse_id": "n06"
+    },
+    {
+      "global_shift": 34,
+      "room_id": "r1",
+      "nurse_id": "n00"
+    },
+    {
+      "global_shift": 34,
+      "room_id": "r2",
+      "nurse_id": "n00"
+    },
+    {
+      "global_shift": 34,
+      "room_id": "r3",
+      "nurse_id": "n00"
+    },
+    {
+      "global_shift": 35,
+      "room_id": "r0",
+      "nurse_id": "n04"
+    },
+    {
+      "global_shift": 35,
+      "room_id": "r1",
+      "nurse_id": "n04"
+    },
+    {
+      "global_shift": 35,
+      "room_id": "r2",
+      "nurse_id": "n04"
+    },
+    {
+      "global_shift": 35,
+      "room_id": "r3",
+      "nurse_id": "n04"
+    },
+    {
+      "global_shift": 36,
+      "room_id": "r0",
+      "nurse_id": "n05"
+    },
+    {
+      "global_shift": 36,
+      "room_id": "r1",
+      "nurse_id": "n03"
+    },
+    {
+      "global_shift": 36,
+      "room_id": "r2",
+      "nurse_id": "n05"
+    },
+    {
+      "global_shift": 36,
+      "room_id": "r3",
+      "nurse_id": "n07"
+    },
+    {
+      "global_shift": 37,
+      "room_id": "r0",
+      "nurse_id": "n08"
+    },
+    {
+      "global_shift": 37,
+      "room_id": "r1",
+      "nurse_id": "n00"
+    },
+    {
+      "global_shift": 37,
+      "room_id": "r2",
+      "nurse_id": "n00"
+    },
+    {
+      "global_shift": 37,
+      "room_id": "r3",
+      "nurse_id": "n00"
+    },
+    {
+      "global_shift": 38,
+      "room_id": "r0",
+      "nurse_id": "n09"
+    },
+    {
+      "global_shift": 38,
+      "room_id": "r1",
+      "nurse_id": "n09"
+    },
+    {
+      "global_shift": 38,
+      "room_id": "r2",
+      "nurse_id": "n09"
+    },
+    {
+      "global_shift": 38,
+      "room_id": "r3",
+      "nurse_id": "n09"
+    },
+    {
+      "global_shift": 39,
+      "room_id": "r0",
+      "nurse_id": "n03"
+    },
+    {
+      "global_shift": 39,
+      "room_id": "r1",
+      "nurse_id": "n04"
+    },
+    {
+      "global_shift": 39,
+      "room_id": "r2",
+      "nurse_id": "n04"
+    },
+    {
+      "global_shift": 39,
+      "room_id": "r3",
+      "nurse_id": "n04"
+    },
+    {
+      "global_shift": 40,
+      "room_id": "r0",
+      "nurse_id": "n10"
+    },
+    {
+      "global_shift": 40,
+      "room_id": "r1",
+      "nurse_id": "n10"
+    },
+    {
+      "global_shift": 40,
+      "room_id": "r2",
+      "nurse_id": "n10"
+    },
+    {
+      "global_shift": 40,
+      "room_id": "r3",
+      "nurse_id": "n10"
+    },
+    {
+      "global_shift": 41,
+      "room_id": "r0",
+      "nurse_id": "n01"
+    },
+    {
+      "global_shift": 41,
+      "room_id": "r1",
+      "nurse_id": "n06"
+    },
+    {
+      "global_shift": 41,
+      "room_id": "r2",
+      "nurse_id": "n06"
+    },
+    {
+      "global_shift": 41,
+      "room_id": "r3",
+      "nurse_id": "n06"
+    }
+  ]
+}
