@@ -13,15 +13,14 @@ O NRA é um subproblema da competição Integrated Healthcare Timetabling Compet
 * Déficit de Habilidade (Penalidade): Aplicada quando o nível de habilidade do enfermeiro é inferior ao exigido pelos pacientes no quarto.
 * Excesso de Trabalho (Penalidade): Aplicada quando a soma da carga de trabalho dos quartos atribuídos a um enfermeiro excede sua capacidade no turno.
 
-## Equipe
+## UFPA - ICEN - FACOMP
 
-* Alessandro Reali Lopes Silva
-* Felipe Lisboa Brasil
-* Leonardo Cunha da Rocha
-
-**UFPA - ICEN - FACOM**P  
-**Disciplina:** EN05264 - MATEMÁTICA COMPUTACIONAL 1  
-**Docentes:** Claudomiro Sales e Helder Matos
+* **Disciplina:** Matemática Computacional 1 (EN05264)
+* **Docentes:** Claudomiro Sales e Helder Matos  
+* **Equipe:**
+  * Alessandro Reali Lopes Silva
+  * Felipe Lisboa Brasil
+  * Leonardo Cunha da Rocha
 
 ---
 
@@ -30,43 +29,71 @@ O NRA é um subproblema da competição Integrated Healthcare Timetabling Compet
 O projeto implementa e compara duas metodologias distintas:
 
 1. PLI (Programação Linear Inteira): Formulação matemática exata utilizando variáveis binárias ou inteiras.
-2. Metaheurística (Algoritmo Genético): Implementação estocástica para busca de soluções e análise de comportamento médio.
+2. Metaheurística (Algoritmo Genético): Implementação estocástica com abordagem gulosa (Shift-by-Shift) para busca de soluções e análise de trade-off (Qualidade vs. Tempo).
 
 ## Como Executar
 
-O projeto utiliza asyncio e ProcessPoolExecutor para garantir a execução simultânea das abordagens e otimizar o tempo de coleta de resultados.
+O orquestrador do projeto (main.py) executa ambas as abordagens (GA e PLI) de forma sequencial para as instâncias configuradas, extraindo métricas de tempo de CPU, pico de RAM e custo total para fins de benchmark.
 
-**OBS:** Descompacte o dataset.zip pois o programa espera pastas nesse formato na pasta dataset: *dataset/i01/arquivo.json*
+### [ATENÇÃO] Pré-requisito de Dados
 
-1. Bibliotecas Necessárias:
-   * pandas (Manipulação de dados CSV)
-   * numpy (Operações matemáticas)
-   * mealpy (Implementação da metaheurística)
-   * matplotlib (Visualização de gráficos)
+* Descompacte o arquivo dataset.zip dentro de `trabalho_final_master/`. A estrutura física de diretórios deve ficar estritamente neste formato: `trabalho_final_master/dataset/i01/instance_info.json`
+* A versão do Python utilizada para desenvolvimento e testes é a 3.10. Certifique-se de ter esta versão instalada, obedecendo o que está especificado no arquivo `.python-version`.
 
-2. Configuração do Ambiente (Recomendado):
+### 1. Bibliotecas Necessárias
+
+* pandas (Manipulação de dados CSV)
+* numpy (Operações matemáticas)
+* mealpy (Implementação da metaheurística)
+* matplotlib (Visualização de gráficos de convergência)
+* pulp (Modelagem e execução do solver PLI)
+
+### 2. Configuração do Ambiente Virtual (Recomendado)
+
+É fortemente recomendado isolar as dependências em um ambiente virtual. No terminal, na raiz do projeto, digite:
+
+```bash
+python -m venv .venv
+
+```
+
+* Para ativar o ambiente (Linux/Mac)
 
    ```bash
-   python -m venv .venv
+   source .venv/bin/activate
 
-   source .venv/bin/activate  # Linux/Mac
-   .venv\Scripts\activate     # Windows
    ```
 
-3. Instalação:
+* Para ativar o ambiente (Windows):
 
    ```bash
-   pip install -r requirements.txt
+   .venv\Scripts\activate
+
    ```
 
-4. Execução:
+### 3. Instalação de Dependências
 
-   ```bash
-   cd trabalho_final_master
-   
-   python -m main.py
-   ```
+Com o ambiente ativado, instale todos os pacotes necessários através do manifesto:
 
-## Prazo de Entrega
+```bash
+pip install -r requirements.txt
 
-* Deadline: 26 de fevereiro de 2026.
+```
+
+### 4. Execução da Análise Comparativa
+
+Para rodar a bateria de testes e gerar as matrizes de escala e o relatório consolidado, execute o módulo principal a partir do diretório `trabalho_final_master/` do repositório:
+
+```bash
+cd trabalho_final_master
+python main.py
+
+```
+
+### 5. Saída de Dados (Outputs)
+
+Após a execução, o algoritmo gerará automaticamente:
+
+* Arquivos CSV dentro da pasta `trabalho_final_master/resultados/` com a escala de cada instância para ambos os métodos.
+* Imagens em PNG dentro da pasta `trabalho_final_master/resultados/` contendo os gráficos de convergência da metaheurística.
+* O arquivo `analise_comparativa_final.csv` dentro da pasta `trabalho_final_master/`, consolidando os tempos de execução, consumo de memória e custos para análise estatística.
